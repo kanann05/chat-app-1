@@ -1,9 +1,9 @@
-"use client"; // Required for client-side rendering
+"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import Login from "./Login"; // Ensure correct import
+import Login from "./Login";
 // import SignUp from "../pages/ui/SignUp";
 
 

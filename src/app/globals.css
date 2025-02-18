@@ -8,7 +8,86 @@ body {
   min-height: 100vh;
 }
 
-
+@font-face {
+  font-family: 'gilroy-black';
+  src: url(../gilroy/Gilroy-Black.ttf);
+}
+@font-face {
+  font-family: 'gilroy-blackitalic';
+  src: url(../gilroy/Gilroy-BlackItalic.ttf);
+}
+@font-face {
+  font-family: 'gilroy-bold';
+  src: url(../gilroy/Gilroy-Bold.ttf);
+}
+@font-face {
+  font-family: 'gilroy-bolditalic';
+  src: url(../gilroy/Gilroy-BlackItalic.ttf);
+}
+@font-face {
+  font-family: 'gilroy-extrabold';
+  src: url(../gilroy/Gilroy-ExtraBold.ttf);
+}
+@font-face {
+  font-family: 'gilroy-extrabolditalic';
+  src: url(../gilroy/Gilroy-ExtraBoldItalic.ttf);
+}
+@font-face {
+  font-family: 'gilroy-heavy';
+  src: url(../gilroy/Gilroy-Heavy.ttf);
+}
+@font-face {
+  font-family: 'gilroy-heavyitalic';
+  src: url(../gilroy/Gilroy-HeavyItalic.ttf);
+}
+@font-face {
+  font-family: 'gilroy-light';
+  src: url(../gilroy/Gilroy-Light.ttf);
+}
+@font-face {
+  font-family: 'gilroy-lightitalic';
+  src: url(../gilroy/Gilroy-LightItalic.ttf);
+}
+@font-face {
+  font-family: 'gilroy-medium';
+  src: url(../gilroy/Gilroy-Medium.ttf);
+}
+@font-face {
+  font-family: 'gilroy-mediumitalic';
+  src: url(../gilroy/Gilroy-MediumItalic.ttf);
+}
+@font-face {
+  font-family: 'gilroy-regular';
+  src: url(../gilroy/Gilroy-Regular.ttf);
+}
+@font-face {
+  font-family: 'gilroy-regulatitalic';
+  src: url(../gilroy/Gilroy-RegularItalic.ttf);
+}
+@font-face {
+  font-family: 'gilroy-semibold';
+  src: url(../gilroy/Gilroy-SemiBold.ttf);
+}
+@font-face {
+  font-family: 'gilroy-semibolditalic';
+  src: url(../gilroy/Gilroy-SemiBoldItalic.ttf);
+}
+@font-face {
+  font-family: 'gilroy-thin';
+  src: url(../gilroy/Gilroy-Thin.ttf);
+}
+@font-face {
+  font-family: 'gilroy-thinitalic';
+  src: url(../gilroy/Gilroy-ThinItalic.ttf);
+}
+@font-face {
+  font-family: 'gilroy-ultralight';
+  src: url(../gilroy/Gilroy-UltraLight.ttf);
+}
+@font-face {
+  font-family: 'gilroy-ultralightitalic';
+  src: url(../gilroy/Gilroy-UltraLightItalic.ttf);
+}
 @layer base {
   :root {
     --background: 0 0% 100%;

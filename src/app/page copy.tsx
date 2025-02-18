@@ -11,7 +11,6 @@ import { DefaultEventsMap } from "@socket.io/component-emitter";
 // const ws = new WebSocket('ws://www.host.com/path');
 let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 
-
 function Home() {
     const [username, setUsername] = useState("");
     let [dbv, setDbv] = useState(false);
@@ -23,17 +22,17 @@ let [email, setEmail] = useState("");
         socketInitializer();
     
         return () => {
-            if(socket) {
-            socket.disconnect();
-            }
+          socket.disconnect();
         };
       }, []);
       async function socketInitializer() {
         await fetch("/api/socket");
     
         socket = io();
-    
-        socket.emit("send-message", {"testdata" : localStorage.getItem("email")});
+        
+        socket.on("receive-message", (data) => {
+          // we get the data here
+        });
       }
     
 

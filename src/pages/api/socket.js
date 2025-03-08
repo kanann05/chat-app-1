@@ -1,33 +1,44 @@
 import { Server } from "socket.io";
 
+// Improved SocketHandler
 export default function SocketHandler(req, res) {
     if (res.socket.server.io) {
-        console.log("Socket is already running");
-        res.end();
-        return;
+      console.log("Socket is already running");
+      res.end();
+      return;
     }
-
-    const io = new Server(res.socket.server, {
-        path: "/api/socketio",
-    });
-    
+  
+    const io = new Server(res.socket.server);
     res.socket.server.io = io;
-
+  
+   
     io.on("connection", (socket) => {
-        console.log("New client connected:", socket.id);
-        
-        socket.on("sendEmail", (data) => {
-            console.log("Received email data:", data);
-        });
-
-        socket.on("disconnect", () => {
-            console.log("Client disconnected:", socket.id);
-        });
+      console.log("New client connected:", socket.id);
+      
+      socket.on("send-message", data => {
+        console.log("Email received:", data);
+        if (data) {
+          socket.join(data);
+          console.log(`Socket ${socket.id} joined room:`, data);
+        }
+        if(!data) {
+            console.log("madarchod")
+        }
+      });
+  
+      socket.on("send-invite", (data) => {
+        console.log("Invite from:", data.from, "to:", data.to);
+        io.to(data.to).emit("receive-invite", data.from);
+      });
+  
+      socket.on("disconnect", () => {
+        console.log("Client disconnected:", socket.id);
+      });
     });
-
+  
     console.log("Socket server initialized");
     res.end();
-}
+  }
 
 // import { Server } from "socket.io";
 // const EventEmitter = require('events');

@@ -9,7 +9,7 @@ import { DefaultEventsMap } from "@socket.io/component-emitter";
 // import WebSocket from 'ws';
 
 // const ws = new WebSocket('ws://www.host.com/path');
-let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
+let socket: Socket;
 
 
 function Home() {
@@ -18,10 +18,13 @@ function Home() {
     let [ibv, setIbv] = useState(false);
 // const socketRef = useRef<Socket | null>(null); 
 let [email, setEmail] = useState("");
+const isSocketReady = useRef(false); // Track if the socket is ready
+
     // let inviteRef = useRef<HTMLDivElement | null>(null);
     useEffect(() => {
         socketInitializer();
-    
+        
+        
         return () => {
             if(socket) {
             socket.disconnect();
@@ -31,11 +34,32 @@ let [email, setEmail] = useState("");
       async function socketInitializer() {
         await fetch("/api/socket");
     
-        socket = io();
+        socket = io({
+             
+          });
     
-        socket.emit("send-message", {"testdata" : localStorage.getItem("email")});
+          
+        socket.emit("send-message", localStorage.getItem("email"));
+        
+        if(isSocketReady.current == true) {
+            setupReceiveInviteListener();
+
+        }
+        isSocketReady.current = true;
+
       }
-    
+      const setupReceiveInviteListener = () => {
+        if (isSocketReady.current && socket) {
+            console.log("Setting up receive-invite listener on socket:", socket.id);
+
+            socket.on("receive-invite", (data) => {
+                console.log("INVITE RECEIVED from:", data);
+                alert("Someone sent you an invite");
+            });
+        } else {
+            console.log("Socket not available yet for event listener ugh");
+        }
+    };
 
     useEffect(() => {
         const inviteElements = document.querySelectorAll('.invite-div');
@@ -71,7 +95,7 @@ let [email, setEmail] = useState("");
     
     useEffect(()=> {
         const findUser = async () => {
-            console.log(email)
+            // console.log(email)
             try {
                 const response = await fetch('/api/findUser', {
                     method : 'POST',
@@ -83,7 +107,7 @@ let [email, setEmail] = useState("");
                 if(response.ok) {
                     let jsonRes = await response.json();
                     setUsername(jsonRes.username);
-                    console.log("hello " + username)
+                    // console.log("hello " + username)
                 }
             }
             catch (error) {
@@ -92,6 +116,28 @@ let [email, setEmail] = useState("");
         }
         findUser();
     }, [email])
+
+    // useEffect(() => {
+    //     if (!socket) {
+    //         console.log("Socket not available yet for event listener");
+    //         return;
+    //     }
+      
+    //     console.log("Setting up receive-invite listener on socket:", socket.id);
+        
+    //     socket.on("receive-invite", (data) => {
+    //         console.log("INVITE RECEIVED from:", data);
+    //         alert("someone sent u an invite");
+    //     });
+      
+    //     return () => {
+    //         console.log("Cleaning up receive-invite listener");
+    //         socket.off("receive-invite");
+    //     };
+    // }, [socket]);
+      
+    
+   
     return(<div className="flex flex-col" style = {{alignItems : 'center'}}>
         {/* <h1 style = {{color : 'white'}}>wassup</h1> */}
         <div className="flex flex-row" style = {{width : '95vw', justifyContent : 'space-between', alignItems : 'center', flexDirection : 'row'}}>
@@ -104,7 +150,7 @@ let [email, setEmail] = useState("");
                     }} style = {{color : "white"}} className="w-[70vw]  2xl:w-[15vw] xl:w-[20vw] lg:w-[30vw] md:w-[35vw] text-[15px] sm:w-[40vw] text-[14px]" placeholder="User's email"/>
                 <div  className="w-[55vw] flex flex-row  2xl:w-[10vw] xl:w-[12vw] lg:w-[18vw] md:w-[20vw] sm:w-[24vw]"  style = {{display :  username === "" ? 'none' : 'flex', borderRadius : '5px', justifyContent : "space-around", alignItems : 'center', position : "relative", backgroundColor : "rgba(255, 223, 223, 0.7)", marginTop : '10px', padding : "7px 15px"}}><div className = "w-1/5 aspect-1/1 xl:w-1/5 lg:w-1/6 md:w-1/5 sm:w-1/5" style= {{borderRadius : '1000px', aspectRatio : '1', backgroundColor : 'rgb(255, 156, 156)', border : '1px solid black', display : 'flex', justifyContent:'center', alignItems : 'center'}}>{username.trim().charAt(0)}</div><p style = {{fontSize : '85%'}}>{username.trim().length > 10 ? (username.trim().slice(0, 10) + "..") : (username.trim())}</p></div>
             
-                <Button className="w-[30vw] 2xl:w-[5vw] xl:w-[7vw] lg:w-[7vw] md:mt-2 sm:w-[10vw] mt-2" style = {{marginLeft : '10px', backgroundColor : "rgb(99, 99, 99)"}}>Text</Button>
+                <Button onClick = {() => {if(socket) socket.emit("send-invite", {"to" : email, "from" : localStorage.getItem("email")})}} className="w-[30vw] 2xl:w-[5vw] xl:w-[7vw] lg:w-[7vw] md:mt-2 sm:w-[10vw] mt-2" style = {{marginLeft : '10px', backgroundColor : "rgb(99, 99, 99)"}}>Text</Button>
 
             </div>
             </div>
@@ -118,8 +164,8 @@ let [email, setEmail] = useState("");
                 <div id = "kanan"  className="invite-div w-[55vw] flex flex-row  2xl:w-[10vw] xl:w-[12vw] lg:w-[18vw] md:w-[20vw] sm:w-[24vw]"  style = {{display : 'flex', borderRadius : '5px', justifyContent : "space-around", alignItems : 'center', position : "relative", backgroundColor : "rgba(255, 223, 223, 0.7)", marginTop : '10px', padding : "7px 15px"}}><div className = "w-1/5 aspect-1/1 xl:w-1/5 lg:w-1/6 md:w-1/5 sm:w-1/5" style= {{borderRadius : '1000px', aspectRatio : '1', backgroundColor : 'rgb(255, 156, 156)', border : '1px solid black', display : 'flex', justifyContent:'center', alignItems : 'center'}}>K</div><p style = {{fontSize : '85%'}}>Kanan</p></div>
                 <div id = "kanada"  className="invite-div w-[55vw] flex flex-row  2xl:w-[10vw] xl:w-[12vw] lg:w-[18vw] md:w-[20vw] sm:w-[24vw]"  style = {{display : 'flex', borderRadius : '5px', justifyContent : "space-around", alignItems : 'center', position : "relative", backgroundColor : "rgba(255, 223, 223, 0.7)", marginTop : '10px', padding : "7px 15px"}}><div className = "w-1/5 aspect-1/1 xl:w-1/5 lg:w-1/6 md:w-1/5 sm:w-1/5" style= {{borderRadius : '1000px', aspectRatio : '1', backgroundColor : 'rgb(255, 156, 156)', border : '1px solid black', display : 'flex', justifyContent:'center', alignItems : 'center'}}>K</div><p style = {{fontSize : '85%'}}>Kanada</p></div>
             
-                <Button className="w-[30vw] 2xl:w-[5vw] xl:w-[7vw] lg:w-[7vw] md:mt-2 sm:w-[10vw] mt-2" style = {{marginLeft : '10px', backgroundColor : "rgb(99, 99, 99)"}}>Text</Button>
-
+                {/* <Button onClick = {() => {socket.emit("send-invite", {"ff" : "f"})}} className="w-[30vw] 2xl:w-[5vw] xl:w-[7vw] lg:w-[7vw] md:mt-2 sm:w-[10vw] mt-2" style = {{marginLeft : '10px', backgroundColor : "rgb(99, 99, 99)"}}>Text</Button> */}
+ 
             </div>
             </div>
             
